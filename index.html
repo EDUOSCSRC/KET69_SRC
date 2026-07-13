@@ -1,13 +1,515 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <base target="_top">
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KUSRC KET 69</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ระบบตรวจสอบผลการจัดชั้นเรียนภาษาอังกฤษ 69 | KUSRC </title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --pine: #0c4a33;
+      --pine-mid: #146c4a;
+      --pine-light: #e4f3ec;
+      --green: #1b7a4f;
+      --green-bg: #eaf6ee;
+      --green-border: #bfe3c8;
+      --gray: #5f6368;
+      --gray-bg: #f8f9fa;
+      --gray-border: #dde1e3;
+      --yellow: #f2b705;
+      --yellow-bg: #fff8e1;
+      --yellow-border: #f3ddac;
+      --red: #c62828;
+      --red-bg: #fdecec;
+      --red-border: #f3c3c1;
+      --slate: #3a5a68;
+      --slate-bg: #eaf2f4;
+      --navy: #1e3a5f;
+      --ink: #20242a;
+      --white: #ffffff;
+      --radius: 12px;
+      --shadow: 0 4px 20px rgba(12, 74, 51, 0.08);
+      font-family: 'Kanit', sans-serif;
+      font-size: 16px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #f4f7f5; color: var(--ink); min-height: 100vh; padding: 24px 16px 50px; line-height: 1.6; font-weight: 400; }
+    .container { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+    .card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 24px; border: 1px solid rgba(0,0,0,0.03); }
+
+    /* แก้ปัญหาลิงก์ล้นจอ */
+    p, span, div {
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      max-width: 100%;
+    }
+    .link-wrap {
+      color: var(--pine-mid);
+      font-weight: 500;
+      text-decoration: underline;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      white-space: normal;
+    }
+
+    /* ================= HERO ================= */
+    .hero {
+      position: relative;
+      background: radial-gradient(circle at 85% 15%, rgba(255,255,255,.16), transparent 45%),
+                  radial-gradient(circle at 15% 90%, rgba(255,255,255,.10), transparent 40%),
+                  linear-gradient(120deg, var(--pine-light) 0%, #cdeadb 45%, #a9dcc0 100%);
+      padding: 0;
+      overflow: hidden;
+      border-radius: 20px;
+    }
+    .hero-inner { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 32px; position: relative; z-index: 2; }
+    .hero-text { flex: 1; }
+    .hero-text h1 { font-size: 24px; font-weight: 600; color: var(--pine); margin-bottom: 8px; line-height: 1.4; }
+    .hero-text p.campus { font-size: 16px; font-weight: 500; color: #2b6b4f; margin-bottom: 16px; }
+
+    .hero-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+    .badge { font-size: 14px; background: var(--yellow); color: #5a4000; padding: 6px 14px; border-radius: 20px; font-weight: 500; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+
+    .hero-art { flex: 0 0 280px; max-width: 280px; display: block; }
+    .hero-art svg { width: 100%; height: auto; display: block; }
+
+    /* ================= SEARCH ================= */
+    .search-group { background: var(--white); border-radius: 12px; padding: 20px; box-shadow: 0 8px 24px rgba(12,74,51,0.1); }
+    .field-label { font-size: 16px; font-weight: 500; color: var(--ink); margin-bottom: 8px; display: block; }
+    .search-box { display: flex; gap: 10px; flex-wrap: wrap; }
+    input[type="text"] {
+      flex: 1; min-width: 200px; padding: 12px 16px; font-size: 16px; border: 2px solid var(--gray-border);
+      border-radius: 8px; outline: none; transition: all 0.2s; font-family: inherit; font-weight: 400;
+    }
+    input[type="text"]:focus { border-color: var(--pine-mid); box-shadow: 0 0 0 3px var(--pine-light); }
+    input[type="text"]::placeholder { font-size: 14px; color: #9aa0a6; }
+
+    .btn-search, .btn-clear {
+      padding: 0 24px; font-size: 16px; font-weight: 500; color: var(--white); border: none;
+      border-radius: 8px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center;
+      justify-content: center; gap: 8px; font-family: inherit; height: 48px;
+    }
+    .btn-search { background: var(--pine-mid); flex: 0 0 auto; }
+    .btn-search:hover { background: var(--pine); }
+    .btn-search:disabled { background: var(--gray-border); cursor: not-allowed; color: var(--gray); }
+
+    .btn-clear { background: var(--gray); flex: 0 0 auto; }
+    .btn-clear:hover { background: #4a4d52; }
+
+    .alert { display: flex; flex-direction: column; gap: 4px; padding: 16px; border-radius: var(--radius); font-size: 14px; align-items: flex-start; font-weight: 400; }
+    .alert-warning { background: var(--yellow-bg); border: 1px solid var(--yellow-border); color: #6b5300; }
+    .alert-danger { background: var(--red-bg); border: 1px solid var(--red-border); color: #8a1f1f; }
+
+    /* ================= RESULTS ================= */
+    #resultSection { display: none; flex-direction: column; gap: 16px; }
+
+    .profile-card { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+    .profile-item { background: var(--gray-bg); border: 1px solid var(--gray-border); padding: 14px 16px; border-radius: 8px; }
+    .profile-item .label { font-size: 14px; color: var(--gray); font-weight: 400; margin-bottom: 4px; }
+    .profile-item .val { font-size: 16px; font-weight: 500; color: var(--ink); }
+
+    /* Exam Cards */
+    .exam-mini-grid { display: flex; flex-wrap: wrap; gap: 16px; }
+    .exam-card-mini { flex: 1; min-width: 200px; border: 1px solid var(--gray-border); border-radius: var(--radius); overflow: hidden; background: var(--white); text-align: center; }
+    .exam-card-mini .e-title { padding: 10px; font-size: 15px; font-weight: 500; color: white; }
+    .e-title.online { background: var(--pine-mid); }
+    .e-title.onsite { background: var(--slate); }
+    .e-title.other { background: #b8860b; }
+
+    .exam-card-mini .e-body { padding: 16px; display: flex; flex-direction: column; justify-content: center; }
+    .exam-card-mini .e-score { font-size: 26px; font-weight: 600; color: var(--ink); line-height: 1; margin-bottom: 8px; }
+    .exam-card-mini .e-cefr { font-size: 14px; font-weight: 400; color: var(--gray); }
+
+    .more-info-link { text-align: center; font-size: 14px; margin: 4px 0 8px; font-style: italic; }
+    .more-info-link a { color: var(--pine-mid); text-decoration: underline; font-weight: 500; font-style: italic; }
+
+    /* ================= SUMMARY SECTION ================= */
+    .section-title {
+      font-size: 18px; font-weight: 500; color: var(--white); background-color: var(--navy);
+      padding: 12px 20px; border-radius: 8px; margin: 8px 0 0; box-shadow: 0 4px 12px rgba(30, 58, 95, 0.15); display: inline-block; width: 100%;
+    }
+
+    .summary-box { border-radius: var(--radius); padding: 24px; border: 2px solid; display: flex; flex-direction: column; gap: 12px; }
+    .summary-box.type-1 { background: var(--yellow-bg); border-color: var(--yellow-border); }
+    .summary-box.type-2, .summary-box.type-4 { background: var(--green-bg); border-color: var(--green-border); }
+    .summary-box.type-none { background: var(--red-bg); border-color: var(--red-border); }
+
+    .status-tag { align-self: flex-start; padding: 4px 12px; color: white; font-size: 14px; font-weight: 500; border-radius: 20px; }
+    .type-1 .status-tag { background: #d49a00; }
+    .type-2 .status-tag, .type-4 .status-tag { background: var(--green); }
+    .type-none .status-tag { background: var(--red); }
+
+    .summary-box p { font-size: 16px; margin: 0; font-weight: 400; }
+    .summary-box ul, .summary-box ol { padding-left: 24px; margin: 0; font-weight: 400; }
+    .summary-box li { margin-bottom: 4px; }
+    .summary-box b, .summary-box strong { font-weight: 500; }
+
+    /* Exemption Box */
+    .exemption-box { background: var(--gray-bg); border: 1px solid var(--gray-border); padding: 20px; border-radius: var(--radius); margin-top: 16px; }
+    .exemption-box p { font-size: 15px; color: var(--ink); margin: 0; line-height: 1.6; }
+    .exemption-box strong { font-size: 16px; color: var(--pine-mid); display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+
+    .loading { display: none; align-items: center; justify-content: center; gap: 10px; padding: 16px; font-size: 15px; color: var(--gray); }
+    .spinner { width: 22px; height: 22px; border: 3px solid var(--gray-border); border-top-color: var(--pine-mid); border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    footer { text-align: center; font-size: 13px; color: var(--gray); margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--gray-border); line-height: 1.6; }
+
+    #confetti { position: fixed; inset: 0; pointer-events: none; z-index: 1000; overflow: hidden; }
+    .confetti-p { position: absolute; top: -20px; width: 10px; height: 10px; animation: fall linear forwards; }
+    @keyframes fall { to { transform: translateY(105vh) rotate(360deg); opacity: 0.3; } }
+
+    @media (max-width: 768px) {
+      .hero-inner { flex-direction: column; padding: 24px; }
+      .hero-art { display: none; }
+      .search-box { flex-direction: column; }
+      .btn-search, .btn-clear { width: 100%; justify-content: center; }
+    }
+  </style>
 </head>
 <body>
-    <iframe style="width: 100%; height: 100vh;" scrolling="yes" src="https://script.google.com/macros/s/AKfycbyQsBt3SV4c0uVmEKoXzzUes_OiVXXdddmmUJ7EFDuCnZVL1lYzd3A0NdNQS4zY_FGA/exec" frameborder="0"></iframe>
+
+  <div id="confetti"></div>
+
+  <div class="container">
+    <div class="hero">
+      <div class="hero-inner">
+        <div class="hero-text">
+          <h1>ระบบตรวจสอบผลการจัดชั้นเรียนภาษาอังกฤษ</h1>
+          <p class="campus">มหาวิทยาลัยเกษตรศาสตร์ วิทยาเขตศรีราชา</p>
+          <div class="hero-badges">
+            <span class="badge">ประจำปีการศึกษา 2569</span>
+            <span class="badge">เฉพาะนิสิตชั้นปีที่ 1 (รหัส 69)</span>
+          </div>
+
+          <div class="search-group">
+            <label class="field-label" for="idInput">เลขประจำตัวประชาชน / Passport ID</label>
+            <div class="search-box">
+              <input type="text" id="idInput" placeholder="กรอกเลข 13 หลัก หรือ Passport ID" maxlength="20" autocomplete="off">
+              <button id="searchBtn" class="btn-search" onclick="handleSearch()">ตรวจสอบ</button>
+              <button id="clearBtn" class="btn-clear" onclick="clearAll()">ล้างข้อมูล</button>
+            </div>
+            <div id="loading" class="loading">
+              <div class="spinner"></div><span>กำลังค้นหาข้อมูล...</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-art" aria-hidden="true">
+          <svg viewBox="0 0 360 340" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="180" cy="300" rx="150" ry="18" fill="#0c4a33" opacity="0.07"/>
+            <g><rect x="30" y="34" rx="14" ry="14" width="70" height="46" fill="#ffffff" opacity="0.9"/><path d="M46 80 L38 94 L58 80 Z" fill="#ffffff" opacity="0.9"/><text x="65" y="63" font-family="'Kanit', sans-serif" font-size="20" font-weight="600" fill="#146c4a" text-anchor="middle">A B C</text></g>
+            <g><rect x="250" y="18" rx="14" ry="14" width="80" height="40" fill="#ffffff" opacity="0.85"/><path d="M270 58 L262 70 L282 58 Z" fill="#ffffff" opacity="0.85"/><text x="290" y="43" font-family="'Kanit', sans-serif" font-size="15" font-weight="600" fill="#1b7a4f" text-anchor="middle">Hello!</text></g>
+            <rect x="55" y="230" width="250" height="10" rx="3" fill="#0c4a33"/>
+            <rect x="70" y="240" width="8" height="70" fill="#0c4a33"/>
+            <rect x="278" y="240" width="8" height="70" fill="#0c4a33"/>
+            <g><path d="M85 226 Q118 214 150 226 L150 200 Q118 190 85 200 Z" fill="#f2b705"/><path d="M150 226 Q182 214 214 226 L214 200 Q182 190 150 200 Z" fill="#e2a300"/><line x1="150" y1="200" x2="150" y2="226" stroke="#b8860b" stroke-width="2"/></g>
+            <g><rect x="205" y="176" width="70" height="48" rx="4" fill="#1b7a4f"/><rect x="211" y="182" width="58" height="36" rx="2" fill="#eaf6ee"/><text x="240" y="205" font-family="'Kanit', sans-serif" font-size="16" font-weight="600" fill="#146c4a" text-anchor="middle">ABC</text><path d="M198 224 L282 224 L292 236 L188 236 Z" fill="#146c4a"/></g>
+            <path d="M50 230 L50 300 L80 300 L76 230 Z" fill="#e2a300"/>
+            <path d="M65 230 Q40 200 50 175 Q75 195 65 230 Z" fill="#1b7a4f"/>
+            <path d="M65 230 Q90 195 78 168 Q52 190 65 230 Z" fill="#2fa06b"/>
+            <path d="M290 262 L330 262 L336 310 L284 310 Z" fill="#c9dde2"/>
+            <path d="M298 262 Q298 244 310 244 Q322 244 322 262" fill="none" stroke="#3a5a68" stroke-width="5" stroke-linecap="round"/>
+            <g><line x1="215" y1="260" x2="205" y2="330" stroke="#0c4a33" stroke-width="6" stroke-linecap="round"/><line x1="245" y1="260" x2="255" y2="330" stroke="#0c4a33" stroke-width="6" stroke-linecap="round"/><rect x="205" y="252" width="52" height="10" rx="5" fill="#0c4a33"/><path d="M218 262 Q210 290 200 320" fill="none" stroke="#8a4a3a" stroke-width="14" stroke-linecap="round"/><path d="M244 262 Q252 290 262 320" fill="none" stroke="#8a4a3a" stroke-width="14" stroke-linecap="round"/><ellipse cx="197" cy="326" rx="12" ry="7" fill="#5c3b2e"/><ellipse cx="265" cy="326" rx="12" ry="7" fill="#5c3b2e"/><path d="M204 176 Q230 160 258 176 L262 244 Q230 258 200 244 Z" fill="#1b7a4f"/><path d="M252 190 Q272 195 278 210" fill="none" stroke="#f0b088" stroke-width="12" stroke-linecap="round"/><path d="M210 195 Q195 205 188 220" fill="none" stroke="#f0b088" stroke-width="12" stroke-linecap="round"/><rect x="222" y="152" width="18" height="16" fill="#f0b088"/><circle cx="231" cy="134" r="26" fill="#f6c19c"/><path d="M205 130 Q202 96 231 92 Q262 96 258 132 Q250 112 231 112 Q212 112 205 130 Z" fill="#3a2a20"/><path d="M206 126 Q200 150 210 162 Q206 140 212 126 Z" fill="#3a2a20"/><path d="M256 126 Q263 150 252 163 Q258 140 251 126 Z" fill="#3a2a20"/><circle cx="222" cy="134" r="2.3" fill="#3a2a20"/><circle cx="241" cy="134" r="2.3" fill="#3a2a20"/><path d="M222 145 Q231 150 240 145" fill="none" stroke="#c17a55" stroke-width="2" stroke-linecap="round"/></g>
+            <circle cx="30" cy="150" r="4" fill="#1b7a4f" opacity="0.35"/>
+            <circle cx="335" cy="130" r="5" fill="#f2b705" opacity="0.4"/>
+            <circle cx="20" cy="260" r="4" fill="#3a5a68" opacity="0.3"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div id="errorAlert" class="alert alert-danger" style="display: none;"></div>
+
+    <div id="initialWarning" class="alert alert-warning" style="display: flex;">
+      <div><b>หมายเหตุ:</b> ระบบนี้ใช้ตรวจสอบผลเฉพาะนิสิตวิทยาเขตศรีราชา เท่านั้น หากท่านศึกษาอยู่วิทยาเขตอื่น กรุณาติดต่อฝ่ายการศึกษาของวิทยาเขตท่าน</div>
+    </div>
+
+    <section id="resultSection">
+
+      <div class="card profile-card">
+        <div class="profile-item">
+          <div class="label">รหัสนิสิต</div>
+          <div class="val" id="resStudentId">-</div>
+        </div>
+        <div class="profile-item">
+          <div class="label">ชื่อ - นามสกุล</div>
+          <div class="val" id="resFullName">-</div>
+        </div>
+        <div class="profile-item">
+          <div class="label">คณะ (Faculty)</div>
+          <div class="val" id="resFaculty">-</div>
+        </div>
+        <div class="profile-item">
+          <div class="label">หลักสูตร (Program)</div>
+          <div class="val" id="resProgram">-</div>
+        </div>
+      </div>
+
+      <div class="exam-mini-grid">
+        <div class="exam-card-mini">
+          <div class="e-title online">KU-KET (Online)</div>
+          <div class="e-body">
+            <div class="e-score" id="resOnScore">-</div>
+            <div class="e-cefr">CEFR Level: <span id="resOnCefr">-</span></div>
+          </div>
+        </div>
+
+        <div class="exam-card-mini" id="onsiteBlock" style="display:none;">
+          <div class="e-title onsite">KU-KET (Onsite)</div>
+          <div class="e-body">
+            <div class="e-score" id="resSiteScore">-</div>
+            <div class="e-cefr">CEFR Level: <span id="resSiteCefr">-</span></div>
+          </div>
+        </div>
+
+        <div class="exam-card-mini" id="otherBlock" style="display:none;">
+          <div class="e-title other">คะแนนอื่น</div>
+          <div class="e-body">
+            <div class="e-score" id="resOtherVal">-</div>
+            <div class="e-cefr" id="resOtherName">-</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="more-info-link">
+        ตรวจสอบผลคะแนนอย่างละเอียดและศึกษาข้อมูลเพิ่มเติม <br>
+        <a class="link-wrap" href="https://registrar.ku.ac.th/pretesteng" target="_blank">https://registrar.ku.ac.th/pretesteng</a>
+      </div>
+
+      <div class="section-title" id="summaryTitle" style="display:none;">ผลการสอบ</div>
+
+      <div id="summaryContainer"></div>
+
+    </section>
+
+    <footer>
+      <p style="font-weight: 500; color: var(--ink);">งานบริหารการศึกษา กองบริหารการศึกษาและพัฒนานิสิต</p>
+      <p>มหาวิทยาลัยเกษตรศาสตร์ วิทยาเขตศรีราชา</p>
+      <p>Tel: 065-716-2624, 065-716-2627 | E-mail: edu.osc-src@ku.th</p>
+    </footer>
+  </div>
+
+  <script>
+    /* ================================================================
+     *  !!! สำคัญ !!! แก้ไขบรรทัดด้านล่างนี้ !!!
+     *  นำลิงก์ Web App /exec ของ Google Apps Script (Backend API) ตัวใหม่
+     *  มาแทนที่ค่าใน API_URL นี้ (ดูวิธี deploy ในคำอธิบายท้ายคำตอบ)
+     * ================================================================ */
+    const API_URL = 'https://script.google.com/macros/s/AKfycb.....แทนที่ด้วยลิงก์ของคุณ...../exec';
+
+    const el = (id) => document.getElementById(id);
+
+    function clearAll() {
+      el('idInput').value = '';
+      el('resultSection').style.display = 'none';
+      el('summaryTitle').style.display = 'none';
+      el('errorAlert').style.display = 'none';
+      el('initialWarning').style.display = 'flex';
+      el('confetti').innerHTML = '';
+    }
+
+    function toggleLoading(isLoading) {
+      el('loading').style.display = isLoading ? 'flex' : 'none';
+      el('searchBtn').disabled = isLoading;
+      el('clearBtn').disabled = isLoading;
+      if (isLoading) el('errorAlert').style.display = 'none';
+    }
+
+    async function handleSearch() {
+      const query = el('idInput').value.trim();
+      if (!query) {
+        showError('กรุณากรอกเลขประจำตัวประชาชน หรือ Passport ID ก่อนทำการค้นหา');
+        return;
+      }
+
+      toggleLoading(true);
+      el('resultSection').style.display = 'none';
+      el('summaryTitle').style.display = 'none';
+      el('confetti').innerHTML = '';
+
+      try {
+        // เรียก Backend API ด้วย fetch() แทน google.script.run
+        const res = await fetch(`${API_URL}?id=${encodeURIComponent(query)}`, {
+          method: 'GET',
+          redirect: 'follow' // Apps Script /exec จะ 302 redirect ไปยัง URL จริงก่อนตอบกลับ ต้อง follow เสมอ
+        });
+
+        if (!res.ok) {
+          throw new Error('HTTP ' + res.status);
+        }
+
+        const data = await res.json();
+        onSearchSuccess(data);
+
+      } catch (err) {
+        onSearchFailure(err);
+      }
+    }
+
+    function showError(msg) {
+      el('errorAlert').textContent = msg;
+      el('errorAlert').style.display = 'flex';
+    }
+
+    function onSearchSuccess(res) {
+      toggleLoading(false);
+      if (res.status === 'error' || res.status === 'not_found') {
+        showError(res.message);
+        return;
+      }
+
+      // ตรวจสอบสถานะมอบตัว (ต้องมีค่า "เข้ามอบตัว" เท่านั้นจึงจะแสดงผล)
+      if (res.enrollStatus !== 'เข้ามอบตัว') {
+        showError('ไม่พบข้อมูลการมอบตัวของนิสิต โปรดติดต่อเจ้าหน้าที่ E-mail: edu.osc-src@ku.th');
+        return;
+      }
+
+      el('initialWarning').style.display = 'none';
+      el('summaryTitle').style.display = 'inline-block';
+
+      // Profile
+      el('resStudentId').textContent = res.studentId;
+      el('resFullName').textContent = res.fullName;
+      el('resFaculty').textContent = res.faculty;
+      el('resProgram').textContent = res.program;
+
+      // Online Exam
+      el('resOnScore').textContent = res.online.score;
+      el('resOnCefr').textContent = res.online.cefr;
+
+      // Onsite Exam
+      if (res.onsite) {
+        el('onsiteBlock').style.display = 'block';
+        el('resSiteScore').textContent = res.onsite.score;
+        el('resSiteCefr').textContent = res.onsite.cefr;
+      } else {
+        el('onsiteBlock').style.display = 'none';
+      }
+
+      // Other Exam
+      if (res.other) {
+        el('otherBlock').style.display = 'block';
+        el('resOtherVal').textContent = res.other.val;
+        el('resOtherName').textContent = res.other.name;
+      } else {
+        el('otherBlock').style.display = 'none';
+      }
+
+      renderSummaryBox(res.summaryCode, !!res.onsite);
+      el('resultSection').style.display = 'flex';
+    }
+
+    function onSearchFailure(err) {
+      toggleLoading(false);
+      showError('เชื่อมต่อฐานข้อมูลไม่สำเร็จ: ' + (err.message || err));
+    }
+
+    function renderSummaryBox(code, hasOnsite) {
+      const container = el('summaryContainer');
+      const c = String(code).trim();
+
+      let html = '';
+      let showExemption = true;
+
+      if (c.includes('EngPrep') || c.startsWith('1') || c === '1') {
+        html = `
+          <div class="card summary-box type-1">
+            <span class="status-tag">1 : ENGPREP</span>
+            <p>นิสิตลงคอร์สเตรียมความพร้อมก่อนลงทะเบียนเรียน (English Preparation Course) ศึกษารายละเอียดเพิ่มเติมได้ที่ <br><a class="link-wrap" href="https://registrar.ku.ac.th/engprep67" target="_blank">https://registrar.ku.ac.th/engprep67</a></p>
+
+            <p style="font-weight: 500; margin-top: 12px; margin-bottom: 4px;">กำหนดการ</p>
+            <ul>
+              <li>แบบสอบถามก่อนเริ่มกิจกรรมปรับพื้นฐาน : แบบสอบถามเปิดวันที่ 5 ก.ค. 2569 และปิดวันที่ 19 ก.ค. 2569</li>
+              <li>เริ่มเรียนและทำกิจกรรม : วันที่ 20 กรกฏาคม 2569</li>
+              <li>ปิดคอร์ส : วันที่ 27 กันยายน 2569</li>
+              <li>รวมระยะเวลาเรียน : 10 สัปดาห์</li>
+            </ul>
+
+            <p style="margin-top: 12px;">เมื่อผ่านเกณฑ์แล้ว จึงจะสามารถลงทะเบียนเรียนรายวิชา 01355103 หรือ 01355xxx หรือเทียบเท่า<br>
+            ทั้งนี้ จำนวนหน่วยกิตให้เป็นไปตามเงื่อนไขของหลักสูตรที่นิสิตเข้าศึกษา</p>
+
+            <p style="font-weight: 500; margin-top: 12px; margin-bottom: 4px;">English Preparation Course : The BUILD SERIES ประกอบด้วย 4 ส่วนหลัก</p>
+            <ol>
+              <li><b>Overview</b> ส่วนนี้จะอธิบายว่า กิจกรรมคืออะไร? เราจะเรียนอะไรกันบ้าง? และเคล็ด (ไม่) ลับ เรียนให้ปัง! ทำอย่างไร?</li>
+              <li><b>เรียนสนุกผ่านเรื่องราวภาษาอังกฤษ</b> ส่วนนี้จะเรียนภาษาอังกฤษผ่านซีรีย์ทั้งหมด 7 ตอน แต่ละตอนจะมีภารกิจให้ทำ 3 ภารกิจ</li>
+              <li><b>ซ้อมมือก่อนลงสนามจริง</b> ส่วนนี้ จะมีแบบฝึกหัดให้ทำ เพื่อฝึกทักษะด้านภาษา ฝึกการฟัง (Listening) ฝึกไวยากรณ์และโครงสร้างภาษา (Structure) และฝึกการอ่าน (Reading)</li>
+              <li><b>สอบ KU-KET วัดพลัง</b> เมื่อเตรียมความพร้อมแล้ว …ถึงเวลาลงสนามสอบจริง กำหนดการสอบในเดือนตุลาคม 2569 (วันสอบจะแจ้งให้ทราบอีกครั้ง แต่ละวิทยาเขตอาจสอบไม่พร้อมกัน)</li>
+            </ol>
+          </div>`;
+
+      } else if (c.includes('01355') || c.startsWith('2') || c === '2') {
+        const desc = hasOnsite
+          ? 'ลงทะเบียนเรียนวิชา 01355xxx ด้วยตนเอง ได้ตั้งแต่เทอมหน้าเป็นต้นไป'
+          : 'ลงทะเบียนเรียนวิชา 01355xxx';
+
+        html = `
+          <div class="card summary-box type-2">
+            <span class="status-tag">2 : 01355XXX</span>
+            <p>${desc}</p>
+            <p>ทั้งนี้ จำนวนหน่วยกิตให้เป็นไปตามเงื่อนไขของหลักสูตรที่นิสิตเข้าศึกษา</p>
+          </div>`;
+
+      } else if (c.includes('Pass') || c.startsWith('4') || c === '4') {
+        html = `
+          <div class="card summary-box type-4">
+            <span class="status-tag">4 : PASS ENG</span>
+            <p>ได้รับการยกเว้นการเรียนภาษาอังกฤษ มหาวิทยาลัยจะดำเนินการใส่ข้อมูล P (Pass) ใน MY.KU.TH เมนู ตรวจสอบผลการเรียนภายในภาคต้น</p>
+          </div>`;
+        showExemption = false;
+        triggerConfetti();
+
+      } else {
+        html = `
+          <div class="card summary-box type-none">
+            <span class="status-tag">ไม่เข้าสอบ</span>
+            <p>นิสิตไม่สามารถลงทะเบียนเรียนภาษาอังกฤษได้ กรุณารอประกาศสอบในรอบถัดไป</p>
+          </div>`;
+      }
+
+      if (showExemption) {
+        html += `
+          <div class="card exemption-box">
+            <strong>
+              <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              หมายเหตุ : การขอยกเว้นเรียนภาษาอังกฤษ
+            </strong>
+            <p style="margin-bottom: 8px;">นิสิตสามารถขอยกเว้นการเรียนภาษาอังกฤษ โดยยื่นคะแนน ได้แก่<br>
+            <b style="color: #000080;">KU-EPT, TOEFL, IELTS, SAT, TOEIC, TU-GET, CU-TEP, O-NET03</b></p>
+            <p style="margin-bottom: 12px;">โดยมหาวิทยาลัยบันทึกคะแนนที่สูงสุด นิสิตจะได้รับยกเว้นเฉพาะหน่วยกิตที่ยังไม่มีผลระดับคะแนน</p>
+            <p><a class="link-wrap" href="https://admissions.src.ku.ac.th/myEng" target="_blank">👉 สามารถยื่นได้ที่นี่</a></p>
+          </div>
+        `;
+      }
+
+      container.innerHTML = html;
+    }
+
+    function triggerConfetti() {
+      const holder = el('confetti');
+      holder.innerHTML = '';
+      const colors = ['#146c4a', '#f2b705', '#1b7a4f', '#3a5a68', '#f0b088'];
+      for (let i = 0; i < 70; i++) {
+        const p = document.createElement('div');
+        p.className = 'confetti-p';
+        p.style.left = Math.random() * 100 + 'vw';
+        p.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        p.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+        p.style.animationDelay = Math.random() * 0.3 + 's';
+        p.style.transform = `scale(${0.5 + Math.random()})`;
+        holder.appendChild(p);
+        setTimeout(() => p.remove(), 4000);
+      }
+    }
+
+    el('idInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') handleSearch(); });
+  </script>
 </body>
 </html>
